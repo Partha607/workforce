@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Management System — Product Presentation (Midnight & Gold)</title>
+<style>
+:root{
+  --bg:#08080c;
+  --bg2:#0e0e16;
+  --ink:#f7f3e8;
+  --muted:#aaa292;
+  --gold:#e7c768;
+  --gold2:#f4d77f;
+  --gold-deep:#bd9b3e;
+  --bronze:#caa14a;
+  --card:rgba(231,199,104,.045);
+  --stroke:rgba(231,199,104,.18);
+  --stroke-soft:rgba(231,199,104,.10);
+  --grad:linear-gradient(120deg,#bd9b3e 0%,#e7c768 45%,#f4d77f 100%);
+  --grad-soft:linear-gradient(120deg,rgba(189,155,62,.25),rgba(244,215,127,.12));
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;overflow-x:hidden;line-height:1.55;-webkit-font-smoothing:antialiased}
+
+/* ambient gold glow background */
+.aurora{position:fixed;inset:0;z-index:-2;overflow:hidden;background:radial-gradient(1200px 700px at 80% -10%,rgba(231,199,104,.10),transparent 60%),radial-gradient(900px 600px at 0% 100%,rgba(189,155,62,.10),transparent 60%),var(--bg)}
+.blob{position:absolute;border-radius:50%;filter:blur(110px);opacity:.22;animation:float 26s ease-in-out infinite}
+.blob.a{width:46vw;height:46vw;background:#e7c768;top:-16vw;right:-10vw}
+.blob.b{width:40vw;height:40vw;background:#bd9b3e;bottom:-14vw;left:-8vw;animation-delay:-9s}
+.blob.c{width:30vw;height:30vw;background:#7a6320;top:38vh;left:30vw;animation-delay:-15s;opacity:.18}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(4vw,5vh) scale(1.08)}}
+.rays{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;background:
+  repeating-linear-gradient(115deg,transparent 0 38px,rgba(231,199,104,.012) 38px 39px)}
+.grain{position:fixed;inset:0;z-index:-1;opacity:.04;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--grad);z-index:100;box-shadow:0 0 16px rgba(231,199,104,.7);transition:width .15s}
+.dots{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:11px}
+.dots a{width:10px;height:10px;border-radius:50%;background:rgba(231,199,104,.20);transition:.3s;display:block;border:1px solid var(--stroke-soft)}
+.dots a:hover{transform:scale(1.35)}
+.dots a.active{background:var(--grad);box-shadow:0 0 12px rgba(231,199,104,.9);transform:scale(1.25)}
+@media(max-width:780px){.dots{display:none}}
+
+.slide{min-height:100vh;width:100%;padding:90px 7vw;display:flex;flex-direction:column;justify-content:center;position:relative;border-bottom:1px solid var(--stroke-soft)}
+.wrap{max-width:1180px;margin:0 auto;width:100%}
+.kicker{display:inline-flex;align-items:center;gap:9px;font-size:.76rem;letter-spacing:.24em;text-transform:uppercase;font-weight:700;color:var(--gold2);background:var(--card);border:1px solid var(--stroke);padding:8px 16px;border-radius:100px;backdrop-filter:blur(8px);margin-bottom:26px}
+.kicker .dot{width:7px;height:7px;border-radius:50%;background:var(--grad);box-shadow:0 0 10px var(--gold)}
+h1{font-size:clamp(2.6rem,7vw,5.4rem);line-height:1.03;font-weight:800;letter-spacing:-.02em;margin-bottom:22px}
+h2{font-size:clamp(2rem,4.6vw,3.3rem);line-height:1.07;font-weight:800;letter-spacing:-.02em;margin-bottom:18px}
+h3{font-size:1.2rem;font-weight:700;margin-bottom:8px}
+.serif{font-family:Georgia,'Times New Roman',serif}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.lead{font-size:clamp(1.05rem,1.7vw,1.32rem);color:var(--muted);max-width:760px;margin-bottom:14px}
+p.body{color:var(--muted);max-width:720px}
+.sub{color:var(--muted);font-size:1.02rem;max-width:800px;margin-bottom:38px}
+
+.grid{display:grid;gap:20px;margin-top:18px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--stroke);border-radius:18px;padding:26px;backdrop-filter:blur(10px);transition:.35s;position:relative;overflow:hidden}
+.card::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:.35s}
+.card:hover{transform:translateY(-6px);background:rgba(231,199,104,.08);border-color:var(--stroke)}
+.card:hover::after{opacity:1}
+.card .ico{width:50px;height:50px;border-radius:13px;display:grid;place-items:center;font-size:1.45rem;margin-bottom:16px;background:var(--grad-soft);border:1px solid var(--stroke)}
+.card p{color:var(--muted);font-size:.96rem}
+.card .tag{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:34px}
+@media(max-width:780px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--card);border:1px solid var(--stroke);border-radius:16px;padding:24px;text-align:center;backdrop-filter:blur(8px)}
+.stat .num{font-size:clamp(2.2rem,4vw,3.2rem);font-weight:800;line-height:1;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.stat .lbl{color:var(--muted);font-size:.84rem;margin-top:8px;letter-spacing:.04em}
+
+.hero h1{margin-bottom:18px}
+.badges{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.badge{background:var(--card);border:1px solid var(--stroke);border-radius:100px;padding:9px 18px;font-size:.85rem;color:var(--ink);font-weight:600;display:flex;align-items:center;gap:8px}
+.badge span{color:var(--gold)}
+.scroll-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;animation:bob 2s infinite}
+@keyframes bob{0%,100%{transform:translate(-50%,0);opacity:.5}50%{transform:translate(-50%,8px);opacity:1}}
+
+.flist{list-style:none;display:grid;gap:14px;margin-top:8px}
+.flist li{display:flex;gap:13px;align-items:flex-start;color:var(--muted)}
+.flist li b{color:var(--ink)}
+.chk{flex:0 0 auto;width:23px;height:23px;border-radius:7px;background:var(--grad);display:grid;place-items:center;font-size:.78rem;color:#1a1505;font-weight:800;margin-top:2px}
+
+.split{display:grid;grid-template-columns:1.05fr .95fr;gap:46px;align-items:center}
+@media(max-width:900px){.split{grid-template-columns:1fr;gap:30px}}
+
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:24px}
+.step{background:var(--card);border:1px solid var(--stroke);border-radius:11px;padding:12px 16px;font-size:.86rem;font-weight:600}
+.arrow{color:var(--gold);font-size:1.2rem}
+
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.chip{background:var(--card);border:1px solid var(--stroke);border-radius:100px;padding:8px 16px;font-size:.85rem;font-weight:600}
+.chip b{color:var(--gold2)}
+
+.phone{width:255px;max-width:80vw;aspect-ratio:9/19;border-radius:34px;border:1px solid var(--stroke);background:linear-gradient(180deg,rgba(231,199,104,.12),rgba(189,155,62,.05));padding:16px;backdrop-filter:blur(8px);margin:0 auto;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(231,199,104,.1)}
+.phone .notch{width:88px;height:18px;background:#08080c;border-radius:0 0 14px 14px;position:absolute;top:0;left:50%;transform:translateX(-50%)}
+.phone .scr{height:100%;border-radius:24px;background:rgba(8,8,12,.7);border:1px solid var(--stroke-soft);padding:18px 14px;display:flex;flex-direction:column;gap:10px}
+.phone .face{margin:8px auto;width:118px;height:118px;border-radius:50%;border:2px dashed var(--gold);display:grid;place-items:center;font-size:2.6rem}
+.phone .btn{background:var(--grad);color:#1a1505;border-radius:11px;text-align:center;padding:12px;font-weight:800;font-size:.88rem;margin-top:auto}
+.phone .row{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted)}
+
+.tl{position:relative;margin-top:24px;padding-left:28px}
+.tl::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--grad)}
+.tl .it{position:relative;margin-bottom:22px}
+.tl .it::before{content:"";position:absolute;left:-28px;top:4px;width:13px;height:13px;border-radius:50%;background:var(--grad);box-shadow:0 0 0 4px rgba(231,199,104,.12)}
+.tl .it h3{margin-bottom:3px;font-size:1.02rem}
+.tl .it p{color:var(--muted);font-size:.9rem}
+
+.stack{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-top:14px}
+.tech{background:var(--card);border:1px solid var(--stroke);border-radius:13px;padding:16px;text-align:center}
+.tech .t{font-weight:700;font-size:.93rem;color:var(--gold2)}
+.tech .d{color:var(--muted);font-size:.77rem;margin-top:3px}
+
+/* chart + diagram containers */
+.panel{background:var(--card);border:1px solid var(--stroke);border-radius:18px;padding:26px;backdrop-filter:blur(10px)}
+.panel h3{margin-bottom:4px}
+.panel .cap{color:var(--muted);font-size:.85rem;margin-bottom:14px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-size:.82rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.svg-label{fill:var(--muted);font-size:11px;font-family:inherit}
+.svg-val{fill:var(--ink);font-size:12px;font-weight:700;font-family:inherit}
+.svg-title{fill:var(--gold2);font-size:12px;font-weight:700;letter-spacing:.05em;font-family:inherit}
+.node{fill:rgba(231,199,104,.07);stroke:var(--stroke);stroke-width:1}
+.node-strong{fill:rgba(231,199,104,.14);stroke:var(--gold);stroke-width:1.2}
+.node-txt{fill:var(--ink);font-size:12px;font-weight:600;font-family:inherit}
+.node-sub{fill:var(--muted);font-size:10px;font-family:inherit}
+.edge{stroke:var(--bronze);stroke-width:1.4;fill:none;opacity:.7}
+.edge-dash{stroke:var(--bronze);stroke-width:1.4;fill:none;opacity:.6;stroke-dasharray:5 4}
+
+.cta{background:var(--grad);border-radius:26px;padding:60px 40px;text-align:center;position:relative;overflow:hidden;color:#191400}
+.cta h2{color:#191400}
+.cta p{color:rgba(25,20,0,.82);max-width:600px;margin:0 auto 26px}
+.btn-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;padding:15px 30px;border-radius:100px;font-weight:700;font-size:1rem;text-decoration:none;transition:.3s;cursor:pointer}
+.btn.solid{background:#08080c;color:var(--gold2);border:1px solid rgba(8,8,12,.3)}
+.btn.solid:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.4)}
+.btn.ghost{background:rgba(25,20,0,.12);color:#191400;border:1px solid rgba(25,20,0,.35)}
+.btn.ghost:hover{background:rgba(25,20,0,.22)}
+
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.4s}.d6{transition-delay:.48s}
+.section-num{position:absolute;top:40px;right:7vw;font-size:.78rem;letter-spacing:.2em;color:var(--muted);font-weight:700}
+.foot{font-size:.8rem;color:var(--muted)}
+hr.soft{border:none;border-top:1px solid var(--stroke-soft);margin:26px 0}
+mark{background:linear-gradient(transparent 60%,rgba(231,199,104,.35) 0);color:#fff;padding:0 2px}
+/* animated draw for chart bars/lines handled via CSS class toggles */
+.bar-rect{transition:height .9s cubic-bezier(.2,.7,.2,1),y .9s cubic-bezier(.2,.7,.2,1)}
+.donut-seg{transition:stroke-dashoffset 1.1s cubic-bezier(.2,.7,.2,1)}
+.line-path{transition:stroke-dashoffset 1.4s ease}
+</style>
+</head>
+<body>
+<div class="aurora"><div class="blob a"></div><div class="blob b"></div><div class="blob c"></div></div>
+<div class="rays"></div><div class="grain"></div>
+<div class="progress" id="prog"></div>
+<nav class="dots" id="dots"></nav>
+
+<!-- 1. HERO -->
+<section class="slide hero" id="s1">
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> Workforce · Attendance · Payroll — One Platform</span>
+    <h1 class="reveal d1">The <span class="grad-text serif">Security Management System</span> that runs your entire field workforce.</h1>
+    <p class="lead reveal d2">Biometric, geo-verified attendance. Built-in, fully compliant payroll. Live field operations and emergency response — for security and staffing companies that can't afford to guess who's on site, or get payday wrong.</p>
+    <div class="badges reveal d3">
+      <div class="badge"><span>◆</span> Face + GPS check-in</div>
+      <div class="badge"><span>◆</span> Automated payroll engine</div>
+      <div class="badge"><span>◆</span> SOS & incident response</div>
+      <div class="badge"><span>◆</span> Multi-company ready</div>
+    </div>
+    <div class="stats reveal d4">
+      <div class="stat"><div class="num" data-count="28">0</div><div class="lbl">Integrated modules</div></div>
+      <div class="stat"><div class="num" data-count="189">0</div><div class="lbl">API endpoints</div></div>
+      <div class="stat"><div class="num" data-count="92">0</div><div class="lbl">% face-match threshold</div></div>
+      <div class="stat"><div class="num" data-count="100">0</div><div class="lbl">% audit-logged actions</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll / ↓ / → to explore</div>
+</section>
+
+<!-- 2. PROBLEM + COST-LEAK CHART -->
+<section class="slide" id="s2">
+  <span class="section-num">01 — The Problem</span>
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> Why this exists</span>
+    <h2 class="reveal d1">Running a field workforce on <span class="grad-text">paper and trust</span> is bleeding you dry.</h2>
+    <p class="sub reveal d2">Guards, nurses, housekeeping, supervisors — spread across dozens of client sites. The old way leaks money and risk at every step.</p>
+    <div class="split">
+      <div>
+        <div class="grid g2">
+          <div class="card reveal d1"><div class="ico">👻</div><h3>Ghost shifts & buddy punching</h3><p>You pay for hours that never happened — and can't prove coverage to clients.</p></div>
+          <div class="card reveal d2"><div class="ico">🧾</div><h3>Payroll chaos</h3><p>Manual EPF/ESI/TDS math, late payslips, disputes, compliance risk.</p></div>
+          <div class="card reveal d3"><div class="ico">📍</div><h3>No proof of presence</h3><p>No defensible, time-and-location-stamped answer for audits.</p></div>
+          <div class="card reveal d4"><div class="ico">🚨</div><h3>Slow emergencies</h3><p>Staff in trouble have no instant lifeline or evidence chain.</p></div>
+        </div>
+      </div>
+      <div class="panel reveal d3">
+        <h3>Where the money leaks — annually</h3>
+        <div class="cap">Illustrative cost recovered after rollout, per ~500-person operation</div>
+        <!-- BAR CHART: before (gold) vs after (faint) -->
+        <svg viewBox="0 0 420 300" role="img" aria-label="Bar chart of cost leakage before and after">
+          <defs>
+            <linearGradient id="barG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f4d77f"/><stop offset="100%" stop-color="#bd9b3e"/>
+            </linearGradient>
+          </defs>
+          <!-- gridlines -->
+          <g stroke="rgba(231,199,104,.12)" stroke-width="1">
+            <line x1="50" y1="40" x2="410" y2="40"/><line x1="50" y1="100" x2="410" y2="100"/>
+            <line x1="50" y1="160" x2="410" y2="160"/><line x1="50" y1="220" x2="410" y2="220"/>
+          </g>
+          <line x1="50" y1="220" x2="410" y2="220" stroke="var(--bronze)" stroke-width="1.5"/>
+          <!-- y labels -->
+          <text class="svg-label" x="44" y="224" text-anchor="end">0</text>
+          <text class="svg-label" x="44" y="164" text-anchor="end">25%</text>
+          <text class="svg-label" x="44" y="104" text-anchor="end">50%</text>
+          <text class="svg-label" x="44" y="44"  text-anchor="end">75%</text>
+          <!-- bars: each group before(faint)/after(gold). data-h is target height -->
+          <g class="bars">
+            <!-- Ghost shifts -->
+            <rect class="bar-rect" x="70"  y="220" width="26" height="0" data-h="156" rx="4" fill="url(#barG)"/>
+            <rect x="100" y="200" width="26" height="20" rx="4" fill="rgba(231,199,104,.16)"/>
+            <text class="svg-label" x="98" y="238" text-anchor="middle">Ghost</text>
+            <!-- Payroll errors -->
+            <rect class="bar-rect" x="160" y="220" width="26" height="0" data-h="120" rx="4" fill="url(#barG)"/>
+            <rect x="190" y="206" width="26" height="14" rx="4" fill="rgba(231,199,104,.16)"/>
+            <text class="svg-label" x="188" y="238" text-anchor="middle">Payroll</text>
+            <!-- Unbilled hours -->
+            <rect class="bar-rect" x="250" y="220" width="26" height="0" data-h="138" rx="4" fill="url(#barG)"/>
+            <rect x="280" y="204" width="26" height="16" rx="4" fill="rgba(231,199,104,.16)"/>
+            <text class="svg-label" x="278" y="238" text-anchor="middle">Unbilled</text>
+            <!-- Disputes -->
+            <rect class="bar-rect" x="340" y="220" width="26" height="0" data-h="92" rx="4" fill="url(#barG)"/>
+            <rect x="370" y="210" width="26" height="10" rx="4" fill="rgba(231,199,104,.16)"/>
+            <text class="svg-label" x="368" y="238" text-anchor="middle">Disputes</text>
+          </g>
+          <text class="svg-title" x="50" y="22">Loss exposure (relative)</text>
+        </svg>
+        <div class="legend">
+          <span><i style="background:linear-gradient(#f4d77f,#bd9b3e)"></i> Before the platform</span>
+          <span><i style="background:rgba(231,199,104,.16)"></i> After rollout</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. SOLUTION + END-TO-END DIAGRAM -->
+<section class="slide" id="s3">
+  <span class="section-num">02 — The Solution</span>
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> One platform, end to end</span>
+    <h2 class="reveal d1">From <span class="grad-text">clock-in to payslip</span> — one connected system.</h2>
+    <p class="sub reveal d2">Every shift verified by face and location. Every verified hour flows into a compliant payroll run. Every action logged. No silos, no double entry.</p>
+    <div class="panel reveal d3">
+      <h3>The end-to-end flow</h3>
+      <div class="cap">A verified hour travels untouched from the field to the bank.</div>
+      <svg viewBox="0 0 1000 170" role="img" aria-label="End to end process diagram">
+        <defs>
+          <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#caa14a"/>
+          </marker>
+          <linearGradient id="nodeG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(231,199,104,.16)"/><stop offset="100%" stop-color="rgba(231,199,104,.05)"/>
+          </linearGradient>
+        </defs>
+        <!-- 6 nodes -->
+        <g font-family="inherit">
+          <!-- node template positions -->
+          <g>
+            <rect x="10"  y="55" width="140" height="60" rx="12" fill="url(#nodeG)" stroke="var(--gold)" stroke-width="1.1"/>
+            <text class="node-txt" x="80" y="80" text-anchor="middle">📲 Check-in</text>
+            <text class="node-sub" x="80" y="98" text-anchor="middle">Face + GPS</text>
+          </g>
+          <line x1="150" y1="85" x2="178" y2="85" class="edge" marker-end="url(#ah)"/>
+          <g>
+            <rect x="180" y="55" width="140" height="60" rx="12" fill="url(#nodeG)" stroke="var(--stroke)" stroke-width="1.1"/>
+            <text class="node-txt" x="250" y="80" text-anchor="middle">✅ Validate</text>
+            <text class="node-sub" x="250" y="98" text-anchor="middle">Auto-approved</text>
+          </g>
+          <line x1="320" y1="85" x2="348" y2="85" class="edge" marker-end="url(#ah)"/>
+          <g>
+            <rect x="350" y="55" width="140" height="60" rx="12" fill="url(#nodeG)" stroke="var(--stroke)" stroke-width="1.1"/>
+            <text class="node-txt" x="420" y="80" text-anchor="middle">🧮 Payroll</text>
+            <text class="node-sub" x="420" y="98" text-anchor="middle">Engine run</text>
+          </g>
+          <line x1="490" y1="85" x2="518" y2="85" class="edge" marker-end="url(#ah)"/>
+          <g>
+            <rect x="520" y="55" width="140" height="60" rx="12" fill="url(#nodeG)" stroke="var(--stroke)" stroke-width="1.1"/>
+            <text class="node-txt" x="590" y="80" text-anchor="middle">🔐 Approve</text>
+            <text class="node-sub" x="590" y="98" text-anchor="middle">Two-person + OTP</text>
+          </g>
+          <line x1="660" y1="85" x2="688" y2="85" class="edge" marker-end="url(#ah)"/>
+          <g>
+            <rect x="690" y="55" width="140" height="60" rx="12" fill="url(#nodeG)" stroke="var(--stroke)" stroke-width="1.1"/>
+            <text class="node-txt" x="760" y="80" text-anchor="middle">📄 Payslip</text>
+            <text class="node-sub" x="760" y="98" text-anchor="middle">Signed PDF</text>
+          </g>
+          <line x1="830" y1="85" x2="858" y2="85" class="edge" marker-end="url(#ah)"/>
+          <g>
+            <rect x="860" y="55" width="132" height="60" rx="12" fill="url(#nodeG)" stroke="var(--gold)" stroke-width="1.1"/>
+            <text class="node-txt" x="926" y="80" text-anchor="middle">💸 Payout</text>
+            <text class="node-sub" x="926" y="98" text-anchor="middle">Bank · API · Cash</text>
+          </g>
+        </g>
+        <text class="svg-label" x="10" y="30">Field</text>
+        <text class="svg-label" x="926" y="30" text-anchor="middle">HQ / Bank</text>
+        <line x1="10" y1="140" x2="992" y2="140" class="edge-dash"/>
+        <text class="svg-label" x="500" y="160" text-anchor="middle">Every step audit-logged · tenant-isolated · encrypted</text>
+      </svg>
+    </div>
+    <div class="grid g4" style="margin-top:24px">
+      <div class="card reveal d1"><span class="tag">Capture</span><h3 style="margin-top:8px">Verified Attendance</h3><p>Dual-layer face + geo-fence proof on every shift.</p></div>
+      <div class="card reveal d2"><span class="tag">Operate</span><h3 style="margin-top:8px">Field Operations</h3><p>Patrols, rounds, incidents, tasks & instant SOS.</p></div>
+      <div class="card reveal d3"><span class="tag">Pay</span><h3 style="margin-top:8px">Compliant Payroll</h3><p>EPF, ESI, TDS, PT, overtime, loans — automatic.</p></div>
+      <div class="card reveal d4"><span class="tag">Govern</span><h3 style="margin-top:8px">Security & Audit</h3><p>Encryption, RBAC & a tamper-evident trail.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. ATTENDANCE -->
+<section class="slide" id="s4">
+  <span class="section-num">03 — Verified Attendance</span>
+  <div class="wrap split">
+    <div>
+      <span class="kicker reveal"><span class="dot"></span> The end of fake attendance</span>
+      <h2 class="reveal d1">Dual-layer <span class="grad-text">biometric check-in</span>.</h2>
+      <p class="body reveal d2" style="margin-bottom:20px">A shift only counts when <b>two things are true at once</b>: the live face matches the enrolled identity, <em>and</em> GPS is inside the site's geo-fence. Anything else is flagged, blocked, or escalated automatically.</p>
+      <ul class="flist">
+        <li class="reveal d2"><span class="chk">✓</span><div><b>Live face match</b> — per-company secure face index. Default 92% confidence, tunable.</div></li>
+        <li class="reveal d3"><span class="chk">✓</span><div><b>Geo-fence enforcement</b> — precise distance maths; weak or spoofed GPS rejected.</div></li>
+        <li class="reveal d4"><span class="chk">✓</span><div><b>Mock-location detection</b> — fake GPS auto-routed to supervisor review.</div></li>
+        <li class="reveal d5"><span class="chk">✓</span><div><b>Strict or flexible</b> per site — block off-site, or allow with sign-off.</div></li>
+      </ul>
+    </div>
+    <div class="reveal d3">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="scr">
+          <div class="row"><span>● On duty</span><span>08:32</span></div>
+          <div style="text-align:center;font-weight:700;font-size:.95rem;color:var(--gold2)">Verify to start shift</div>
+          <div class="face">🙂</div>
+          <div class="row"><span>📍 Inside fence</span><span style="color:var(--gold2);font-weight:700">12 m</span></div>
+          <div class="row"><span>🧠 Face match</span><span style="color:var(--gold2);font-weight:700">96.4%</span></div>
+          <div class="btn">✓ Check in — VALID</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. DECISION DIAGRAM + OUTCOMES DONUT -->
+<section class="slide" id="s5">
+  <span class="section-num">04 — Intelligent Validation</span>
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> Every check-in, automatically judged</span>
+    <h2 class="reveal d1">Four outcomes. <span class="grad-text">Zero arguments.</span></h2>
+    <p class="sub reveal d2">The system decides the instant a guard taps "check in" — only clean, approved records reach payroll.</p>
+    <div class="split">
+      <div class="panel reveal d2">
+        <h3>The decision logic</h3>
+        <div class="cap">Two gates, four outcomes — evaluated server-side.</div>
+        <svg viewBox="0 0 460 300" role="img" aria-label="Attendance decision tree">
+          <defs>
+            <marker id="ah2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6 Z" fill="#caa14a"/></marker>
+          </defs>
+          <!-- root -->
+          <rect x="165" y="10" width="130" height="46" rx="10" class="node-strong"/>
+          <text class="node-txt" x="230" y="32" text-anchor="middle">Check-in</text>
+          <text class="node-sub" x="230" y="47" text-anchor="middle">GPS + Face captured</text>
+          <!-- gate 1 -->
+          <path d="M230,56 L230,80" class="edge" marker-end="url(#ah2)"/>
+          <polygon points="230,82 300,118 230,154 160,118" fill="rgba(231,199,104,.10)" stroke="var(--gold)" stroke-width="1.1"/>
+          <text class="node-txt" x="230" y="115" text-anchor="middle">Inside</text>
+          <text class="node-txt" x="230" y="130" text-anchor="middle">fence?</text>
+          <!-- branch yes/no -->
+          <path d="M160,118 L95,118 L95,150" class="edge" marker-end="url(#ah2)"/>
+          <text class="svg-label" x="120" y="112">No</text>
+          <path d="M300,118 L365,118 L365,150" class="edge" marker-end="url(#ah2)"/>
+          <text class="svg-label" x="332" y="112">Yes</text>
+          <!-- gate 2a (face) under No -->
+          <polygon points="95,152 145,182 95,212 45,182" fill="rgba(231,199,104,.08)" stroke="var(--stroke)" stroke-width="1.1"/>
+          <text class="node-sub" x="95" y="186" text-anchor="middle">Face ok?</text>
+          <!-- gate 2b (face) under Yes -->
+          <polygon points="365,152 415,182 365,212 315,182" fill="rgba(231,199,104,.08)" stroke="var(--stroke)" stroke-width="1.1"/>
+          <text class="node-sub" x="365" y="186" text-anchor="middle">Face ok?</text>
+          <!-- leaves -->
+          <path d="M70,205 L40,205 L40,245" class="edge-dash" marker-end="url(#ah2)"/>
+          <rect x="5" y="247" width="70" height="40" rx="9" fill="rgba(247,90,140,.10)" stroke="rgba(247,90,140,.5)"/>
+          <text class="node-sub" x="40" y="264" text-anchor="middle" fill="#f5a">Out of</text>
+          <text class="node-sub" x="40" y="277" text-anchor="middle" fill="#f5a">zone</text>
+          <path d="M120,205 L150,205 L150,245" class="edge-dash" marker-end="url(#ah2)"/>
+          <rect x="115" y="247" width="70" height="40" rx="9" fill="rgba(247,90,140,.10)" stroke="rgba(247,90,140,.5)"/>
+          <text class="node-sub" x="150" y="270" text-anchor="middle" fill="#f5a">Rejected</text>
+          <path d="M340,205 L310,205 L310,245" class="edge-dash" marker-end="url(#ah2)"/>
+          <rect x="275" y="247" width="70" height="40" rx="9" fill="rgba(247,90,140,.10)" stroke="rgba(247,90,140,.5)"/>
+          <text class="node-sub" x="310" y="264" text-anchor="middle" fill="#f5a">Face</text>
+          <text class="node-sub" x="310" y="277" text-anchor="middle" fill="#f5a">mismatch</text>
+          <path d="M390,205 L420,205 L420,245" class="edge" marker-end="url(#ah2)"/>
+          <rect x="385" y="247" width="70" height="40" rx="9" fill="rgba(231,199,104,.16)" stroke="var(--gold)"/>
+          <text class="node-sub" x="420" y="270" text-anchor="middle" fill="var(--gold2)" font-weight="700">VALID ✓</text>
+        </svg>
+      </div>
+      <div class="panel reveal d3">
+        <h3>Typical check-in outcomes</h3>
+        <div class="cap">A healthy operation: the vast majority pass clean.</div>
+        <!-- DONUT -->
+        <svg viewBox="0 0 220 220" role="img" aria-label="Donut chart of attendance outcomes" style="max-width:300px;margin:0 auto">
+          <g transform="translate(110,110)">
+            <circle r="80" fill="none" stroke="rgba(231,199,104,.10)" stroke-width="26"/>
+            <!-- segments: circumference = 2*pi*80 = 502.65 -->
+            <circle class="donut-seg" r="80" fill="none" stroke="#e7c768" stroke-width="26" stroke-dasharray="502.65" stroke-dashoffset="502.65" data-frac=".82" transform="rotate(-90)" stroke-linecap="butt"/>
+            <circle class="donut-seg" r="80" fill="none" stroke="#bd9b3e" stroke-width="26" stroke-dasharray="502.65" stroke-dashoffset="502.65" data-frac=".11" data-rot="295.2" stroke-linecap="butt"/>
+            <circle class="donut-seg" r="80" fill="none" stroke="#7a6320" stroke-width="26" stroke-dasharray="502.65" stroke-dashoffset="502.65" data-frac=".07" data-rot="334.8" stroke-linecap="butt"/>
+            <text x="0" y="-4" text-anchor="middle" class="svg-val" style="font-size:30px;fill:var(--gold2)">82%</text>
+            <text x="0" y="16" text-anchor="middle" class="svg-label">auto-valid</text>
+          </g>
+        </svg>
+        <div class="legend" style="justify-content:center">
+          <span><i style="background:#e7c768"></i> Valid (auto)</span>
+          <span><i style="background:#bd9b3e"></i> Supervisor-approved</span>
+          <span><i style="background:#7a6320"></i> Flagged / rejected</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. FIELD OPS -->
+<section class="slide" id="s6">
+  <span class="section-num">05 — Field Operations</span>
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> Beyond clocking in</span>
+    <h2 class="reveal d1">Your whole <span class="grad-text">operation</span>, in their pocket.</h2>
+    <p class="sub reveal d2">A role-aware app that reshapes itself for each worker — a guard sees patrols and SOS, a nurse sees patient rounds, a supervisor sees their team.</p>
+    <div class="grid g3">
+      <div class="card reveal d1"><div class="ico">🛡️</div><h3>Patrol & checkpoints</h3><p>QR / NFC checkpoint scans prove guards walked the full round — with gaps surfaced automatically.</p></div>
+      <div class="card reveal d2"><div class="ico">🏥</div><h3>Patient rounds & handovers</h3><p>Healthcare staff log rounds and handover notes against a patient master — auditable care.</p></div>
+      <div class="card reveal d3"><div class="ico">🚨</div><h3>One-touch SOS</h3><p>Press-and-hold panic button streams live location and records audio, with timed re-escalation.</p></div>
+      <div class="card reveal d4"><div class="ico">📸</div><h3>Incident reporting</h3><p>Geo-tagged photos, audio & severity. Critical incidents fire instant alerts.</p></div>
+      <div class="card reveal d5"><div class="ico">✅</div><h3>Tasks & assignments</h3><p>Assign duties to staff and sites, track completion, keep an accountable record.</p></div>
+      <div class="card reveal d6"><div class="ico">🌴</div><h3>Leave & reimbursements</h3><p>Leave with live balances, expense claims with receipts — straight into payroll.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. PAYROLL + PIPELINE DIAGRAM -->
+<section class="slide" id="s7">
+  <span class="section-num">06 — Payroll Engine</span>
+  <div class="wrap split">
+    <div>
+      <span class="kicker reveal"><span class="dot"></span> The hardest part, solved</span>
+      <h2 class="reveal d1">Payroll that's <span class="grad-text">compliant by default</span>.</h2>
+      <p class="body reveal d2" style="margin-bottom:18px">Approved attendance is the single source of truth. The engine runs a strict, ordered pipeline and produces identical results every time. <mark>Same inputs, same payslips.</mark></p>
+      <ul class="flist">
+        <li class="reveal d2"><span class="chk">₹</span><div><b>Statutory built in</b> — EPF, ESI, PT and TDS against versioned, year-specific rules.</div></li>
+        <li class="reveal d3"><span class="chk">₹</span><div><b>Real-world pay</b> — overtime, night shifts, allowances, LOP, bonuses, arrears, advances, loans.</div></li>
+        <li class="reveal d4"><span class="chk">₹</span><div><b>Old & new tax regimes</b> — annualised, per-employee TDS with rebates and cess.</div></li>
+        <li class="reveal d5"><span class="chk">₹</span><div><b>Exception guardrails</b> — missing details or anomalies block the run until resolved.</div></li>
+      </ul>
+    </div>
+    <div class="reveal d3">
+      <div class="panel">
+        <h3>Engine pipeline</h3>
+        <div class="cap">Ordered stages — nothing skipped, fully auditable.</div>
+        <svg viewBox="0 0 360 330" role="img" aria-label="Payroll pipeline diagram">
+          <defs><marker id="ah3" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6 Z" fill="#caa14a"/></marker></defs>
+          <g>
+            <rect x="60" y="6"   width="240" height="44" rx="10" class="node-strong"/>
+            <text class="node-txt" x="180" y="26" text-anchor="middle">1 · Pull approved attendance</text>
+            <text class="node-sub" x="180" y="41" text-anchor="middle">Present · paid · LOP · OT · nights</text>
+            <line x1="180" y1="50" x2="180" y2="62" class="edge" marker-end="url(#ah3)"/>
+            <rect x="60" y="64"  width="240" height="44" rx="10" class="node"/>
+            <text class="node-txt" x="180" y="84" text-anchor="middle">2 · Compute earnings</text>
+            <text class="node-sub" x="180" y="99" text-anchor="middle">Basic → HRA → allowances → OT → bonus</text>
+            <line x1="180" y1="108" x2="180" y2="120" class="edge" marker-end="url(#ah3)"/>
+            <rect x="60" y="122" width="240" height="44" rx="10" class="node"/>
+            <text class="node-txt" x="180" y="142" text-anchor="middle">3 · Statutory deductions</text>
+            <text class="node-sub" x="180" y="157" text-anchor="middle">EPF · ESI · PT · advances · loans</text>
+            <line x1="180" y1="166" x2="180" y2="178" class="edge" marker-end="url(#ah3)"/>
+            <rect x="60" y="180" width="240" height="44" rx="10" class="node"/>
+            <text class="node-txt" x="180" y="200" text-anchor="middle">4 · Calculate TDS</text>
+            <text class="node-sub" x="180" y="215" text-anchor="middle">Annualised · regime-aware · runs last</text>
+            <line x1="180" y1="224" x2="180" y2="236" class="edge" marker-end="url(#ah3)"/>
+            <rect x="60" y="238" width="240" height="44" rx="10" class="node"/>
+            <text class="node-txt" x="180" y="258" text-anchor="middle">5 · Totals & exceptions</text>
+            <text class="node-sub" x="180" y="273" text-anchor="middle">Gross · net · employer contrib · flags</text>
+            <line x1="180" y1="282" x2="180" y2="294" class="edge" marker-end="url(#ah3)"/>
+            <rect x="60" y="296" width="240" height="32" rx="10" fill="rgba(231,199,104,.16)" stroke="var(--gold)"/>
+            <text class="node-sub" x="180" y="316" text-anchor="middle" fill="var(--gold2)" font-weight="700">📄 Signed payslip draft</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. PAYSLIPS & PAYOUT -->
+<section class="slide" id="s8">
+  <span class="section-num">07 — Payslips & Payout</span>
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> From approval to bank account</span>
+    <h2 class="reveal d1">Signed payslips. <span class="grad-text">Pay any way you pay.</span></h2>
+    <p class="sub reveal d2">Once a run is approved by two different people, the system generates and delivers everything — and disburses through whatever channels your business actually uses.</p>
+    <div class="grid g4">
+      <div class="card reveal d1"><div class="ico">📄</div><h3>Signed PDFs</h3><p>Tamper-evident payslips with a verification QR, delivered to each employee's app.</p></div>
+      <div class="card reveal d2"><div class="ico">🏦</div><h3>Bank transfer files</h3><p>NEFT/RTGS batch files in major bank formats — pay everyone in one go.</p></div>
+      <div class="card reveal d3"><div class="ico">⚡</div><h3>Instant API payouts</h3><p>Push salaries via payout API with automatic reconciliation.</p></div>
+      <div class="card reveal d4"><div class="ico">💵</div><h3>Cash register</h3><p>Printable cash payout register with a signature column.</p></div>
+    </div>
+    <hr class="soft reveal d2">
+    <div class="split" style="margin-top:6px">
+      <div class="reveal d1"><h3 style="margin-bottom:10px">Two-person rule — money is never one click away</h3><p class="body">A payroll officer prepares; a company admin approves with a one-time passcode. The same person can't do both. Every run, override and approval is permanently audit-logged.</p></div>
+      <div class="reveal d2"><h3 style="margin-bottom:10px">Year-end, handled</h3><p class="body">Form 16, quarterly TDS returns, monthly PF and ESI files — generated from the same data, ready for filing.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. MULTI-TENANT + ISOLATION DIAGRAM -->
+<section class="slide" id="s9">
+  <span class="section-num">08 — Built to Scale</span>
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> One platform, many companies</span>
+    <h2 class="reveal d1">Multi-company. <span class="grad-text">Multi-role.</span> Airtight isolation.</h2>
+    <p class="sub reveal d2">Run unlimited companies on one platform — each one's data sealed off by three independent layers. Add a branch, franchise or client company without new infrastructure.</p>
+    <div class="split">
+      <div class="panel reveal d2">
+        <h3>Three layers of tenant isolation</h3>
+        <div class="cap">A cross-company data leak is made structurally impossible.</div>
+        <svg viewBox="0 0 440 250" role="img" aria-label="Tenant isolation layers diagram">
+          <!-- concentric shields -->
+          <rect x="20" y="20" width="400" height="210" rx="16" fill="rgba(231,199,104,.05)" stroke="var(--stroke)"/>
+          <text class="svg-title" x="40" y="46">① Access token</text>
+          <text class="node-sub" x="40" y="64">Company identity carried in every signed token — never trusted from the URL</text>
+          <rect x="55" y="80" width="330" height="135" rx="14" fill="rgba(231,199,104,.06)" stroke="var(--stroke)"/>
+          <text class="svg-title" x="75" y="106">② Data layer</text>
+          <text class="node-sub" x="75" y="124">Every query auto-filtered by company before it ever runs</text>
+          <rect x="95" y="138" width="250" height="64" rx="12" fill="rgba(231,199,104,.12)" stroke="var(--gold)"/>
+          <text class="svg-title" x="115" y="162" fill="var(--gold2)">③ Database</text>
+          <text class="node-sub" x="115" y="180">Row-level security in the database itself —</text>
+          <text class="node-sub" x="115" y="194">the last, unbypassable line of defence</text>
+        </svg>
+      </div>
+      <div>
+        <div class="grid g2">
+          <div class="card reveal d1"><div class="ico">🎛️</div><h3>Granular roles</h3><p>Eight role types, each seeing exactly what they should.</p></div>
+          <div class="card reveal d2"><div class="ico">⚙️</div><h3>Per-company config</h3><p>Face thresholds, fences, pay structures, leave & cycles all tune per company.</p></div>
+        </div>
+        <h3 class="reveal d3" style="margin-top:24px;margin-bottom:4px">Everyone gets their own view</h3>
+        <div class="chips reveal d3">
+          <div class="chip"><b>Super Admin</b></div><div class="chip"><b>Company Admin</b></div>
+          <div class="chip"><b>Payroll Officer</b></div><div class="chip"><b>Supervisor</b></div>
+          <div class="chip"><b>Employee</b></div><div class="chip"><b>Client</b></div>
+          <div class="chip"><b>Data Officer</b></div><div class="chip"><b>Auditor</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. SECURITY -->
+<section class="slide" id="s10">
+  <span class="section-num">09 — Security & Compliance</span>
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> Enterprise-grade trust</span>
+    <h2 class="reveal d1">Built for the <span class="grad-text">most sensitive data</span> you hold.</h2>
+    <p class="sub reveal d2">Faces, salaries, bank accounts, government IDs. Every one treated like the liability it is — privacy and security engineered in, not bolted on.</p>
+    <div class="grid g4">
+      <div class="card reveal d1"><div class="ico">🧬</div><h3>Biometric minimisation</h3><p>Secure face templates, not raw photos. Enrolment images auto-deleted; per-company indexes never shared.</p></div>
+      <div class="card reveal d2"><div class="ico">🔐</div><h3>Encryption everywhere</h3><p>Encrypted in transit and at rest, with IDs and bank details individually encrypted.</p></div>
+      <div class="card reveal d3"><div class="ico">📜</div><h3>Tamper-evident audit</h3><p>Every login, payroll action and sensitive-data view recorded to an append-only trail.</p></div>
+      <div class="card reveal d4"><div class="ico">🪪</div><h3>Consent & data rights</h3><p>Digital consent, masked IDs by default, built-in access & erasure requests.</p></div>
+      <div class="card reveal d5"><div class="ico">🔑</div><h3>MFA & device binding</h3><p>Multi-factor for admins, device-bound logins for staff, lockouts & rotating tokens.</p></div>
+      <div class="card reveal d6"><div class="ico">⏳</div><h3>Smart retention</h3><p>Each data type expires on its own legally-grounded schedule, automatically.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. APPS -->
+<section class="slide" id="s11">
+  <span class="section-num">10 — The Apps</span>
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> Two front doors</span>
+    <h2 class="reveal d1">A <span class="grad-text">field app</span> and a <span class="grad-text">command center</span>.</h2>
+    <div class="split" style="margin-top:14px">
+      <div class="card reveal d1"><div class="ico">📱</div><h3>Mobile app — for the field</h3><p style="margin-bottom:14px">A single cross-platform app for every frontline worker, adapting to their role.</p>
+        <ul class="flist">
+          <li><span class="chk">✓</span><div>Face + GPS check-in, patrols, rounds, incidents, SOS</div></li>
+          <li><span class="chk">✓</span><div>Leave, reimbursements and in-app payslip viewer</div></li>
+          <li><span class="chk">✓</span><div>Works offline; encrypted token storage; screenshot-protected payslips</div></li>
+        </ul></div>
+      <div class="card reveal d2"><div class="ico">🖥️</div><h3>Web command center — for HQ</h3><p style="margin-bottom:14px">Role-based web panels for admins, payroll, clients and the platform owner.</p>
+        <ul class="flist">
+          <li><span class="chk">✓</span><div>Employees, sites, clients, shifts, roles & checkpoints</div></li>
+          <li><span class="chk">✓</span><div>Attendance oversight, leave & incident management</div></li>
+          <li><span class="chk">✓</span><div>Pay structures, payroll runs, reports & client portal</div></li>
+        </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12. ARCHITECTURE DIAGRAM -->
+<section class="slide" id="s12">
+  <span class="section-num">11 — Under the Hood</span>
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> Engineered to last</span>
+    <h2 class="reveal d1">Modern, <span class="grad-text">cloud-native</span> architecture.</h2>
+    <p class="sub reveal d2">A clean, modular system on managed cloud infrastructure — auto-scaling under load, recovering fast from failure.</p>
+    <div class="panel reveal d2">
+      <h3>System topology</h3>
+      <div class="cap">Secure edge → scalable API → managed data & intelligence services.</div>
+      <svg viewBox="0 0 960 300" role="img" aria-label="Architecture topology diagram">
+        <defs><marker id="ah4" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L6,3 L0,6 Z" fill="#caa14a"/></marker></defs>
+        <!-- clients -->
+        <rect x="20" y="60" width="150" height="50" rx="11" class="node-strong"/>
+        <text class="node-txt" x="95" y="80" text-anchor="middle">📱 Mobile app</text>
+        <text class="node-sub" x="95" y="96" text-anchor="middle">Field staff</text>
+        <rect x="20" y="130" width="150" height="50" rx="11" class="node-strong"/>
+        <text class="node-txt" x="95" y="150" text-anchor="middle">🖥️ Web panels</text>
+        <text class="node-sub" x="95" y="166" text-anchor="middle">HQ · clients</text>
+        <!-- edge -->
+        <line x1="170" y1="85" x2="205" y2="110" class="edge" marker-end="url(#ah4)"/>
+        <line x1="170" y1="155" x2="205" y2="130" class="edge" marker-end="url(#ah4)"/>
+        <rect x="210" y="90" width="120" height="60" rx="11" class="node"/>
+        <text class="node-txt" x="270" y="114" text-anchor="middle">🛡️ Secure edge</text>
+        <text class="node-sub" x="270" y="132" text-anchor="middle">CDN · WAF · TLS</text>
+        <line x1="330" y1="120" x2="365" y2="120" class="edge" marker-end="url(#ah4)"/>
+        <!-- API -->
+        <rect x="370" y="85" width="140" height="70" rx="12" fill="rgba(231,199,104,.14)" stroke="var(--gold)"/>
+        <text class="node-txt" x="440" y="112" text-anchor="middle">⚙️ API service</text>
+        <text class="node-sub" x="440" y="130" text-anchor="middle">Auto-scaling</text>
+        <text class="node-sub" x="440" y="144" text-anchor="middle">28 modules</text>
+        <!-- worker -->
+        <line x1="440" y1="155" x2="440" y2="200" class="edge" marker-end="url(#ah4)"/>
+        <rect x="370" y="202" width="140" height="50" rx="11" class="node"/>
+        <text class="node-txt" x="440" y="222" text-anchor="middle">🔄 Workers</text>
+        <text class="node-sub" x="440" y="238" text-anchor="middle">Payroll · PDF · SOS · alerts</text>
+        <!-- data services right -->
+        <line x1="510" y1="105" x2="600" y2="70" class="edge" marker-end="url(#ah4)"/>
+        <line x1="510" y1="120" x2="600" y2="130" class="edge" marker-end="url(#ah4)"/>
+        <line x1="510" y1="135" x2="600" y2="190" class="edge" marker-end="url(#ah4)"/>
+        <line x1="510" y1="228" x2="600" y2="250" class="edge" marker-end="url(#ah4)"/>
+        <rect x="605" y="48" width="150" height="48" rx="11" class="node"/>
+        <text class="node-txt" x="680" y="68" text-anchor="middle">🗄️ PostgreSQL</text>
+        <text class="node-sub" x="680" y="84" text-anchor="middle">Row-level isolation</text>
+        <rect x="605" y="110" width="150" height="48" rx="11" class="node"/>
+        <text class="node-txt" x="680" y="130" text-anchor="middle">⚡ Cache & queue</text>
+        <text class="node-sub" x="680" y="146" text-anchor="middle">Jobs · sessions</text>
+        <rect x="605" y="172" width="150" height="48" rx="11" class="node"/>
+        <text class="node-txt" x="680" y="192" text-anchor="middle">🧠 Face recognition</text>
+        <text class="node-sub" x="680" y="208" text-anchor="middle">Per-company index</text>
+        <rect x="605" y="234" width="150" height="48" rx="11" class="node"/>
+        <text class="node-txt" x="680" y="254" text-anchor="middle">📦 Object storage</text>
+        <text class="node-sub" x="680" y="270" text-anchor="middle">Encrypted · lifecycle</text>
+        <!-- integrations -->
+        <line x1="755" y1="72" x2="800" y2="90" class="edge-dash" marker-end="url(#ah4)"/>
+        <line x1="755" y1="134" x2="800" y2="130" class="edge-dash" marker-end="url(#ah4)"/>
+        <line x1="755" y1="196" x2="800" y2="170" class="edge-dash" marker-end="url(#ah4)"/>
+        <rect x="805" y="78" width="140" height="120" rx="12" fill="rgba(231,199,104,.05)" stroke="var(--stroke)"/>
+        <text class="svg-title" x="875" y="100" text-anchor="middle">Integrations</text>
+        <text class="node-sub" x="875" y="124" text-anchor="middle">SMS · Push · Email</text>
+        <text class="node-sub" x="875" y="144" text-anchor="middle">Payout API</text>
+        <text class="node-sub" x="875" y="164" text-anchor="middle">Maps</text>
+        <text class="node-sub" x="875" y="184" text-anchor="middle">Signed webhooks</text>
+        <text class="svg-label" x="20" y="40">Clients</text>
+        <text class="svg-label" x="370" y="40">Compute</text>
+        <text class="svg-label" x="605" y="40">Managed data</text>
+      </svg>
+    </div>
+    <div class="stats" style="margin-top:24px">
+      <div class="stat reveal d1"><div class="num" data-count="2000">0</div><div class="lbl">Employees / run in ~3 min</div></div>
+      <div class="stat reveal d2"><div class="num" data-count="34">0</div><div class="lbl">Data models</div></div>
+      <div class="stat reveal d3"><div class="num" data-count="115">0</div><div class="lbl">Automated tests passing</div></div>
+      <div class="stat reveal d4"><div class="num" data-count="2">0</div><div class="lbl">Hour recovery objective</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. SCALE LINE CHART -->
+<section class="slide" id="s13">
+  <span class="section-num">12 — Performance & Scale</span>
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> Grows with you</span>
+    <h2 class="reveal d1">Lean to start. <span class="grad-text">Limitless to grow.</span></h2>
+    <p class="sub reveal d2">Costs stay low for small deployments and scale only as your headcount grows — while payroll throughput stays fast.</p>
+    <div class="split">
+      <div class="panel reveal d2">
+        <h3>Payroll throughput vs. headcount</h3>
+        <div class="cap">Run time stays low as employee count climbs.</div>
+        <svg viewBox="0 0 440 280" role="img" aria-label="Line chart of payroll run time vs headcount">
+          <!-- axes -->
+          <g stroke="rgba(231,199,104,.12)"><line x1="50" y1="40" x2="420" y2="40"/><line x1="50" y1="100" x2="420" y2="100"/><line x1="50" y1="160" x2="420" y2="160"/><line x1="50" y1="220" x2="420" y2="220"/></g>
+          <line x1="50" y1="220" x2="420" y2="220" stroke="var(--bronze)" stroke-width="1.5"/>
+          <line x1="50" y1="40" x2="50" y2="220" stroke="var(--bronze)" stroke-width="1.5"/>
+          <text class="svg-label" x="44" y="224" text-anchor="end">0</text>
+          <text class="svg-label" x="44" y="164" text-anchor="end">2m</text>
+          <text class="svg-label" x="44" y="104" text-anchor="end">4m</text>
+          <text class="svg-label" x="44" y="44"  text-anchor="end">6m</text>
+          <text class="svg-label" x="60"  y="238">100</text>
+          <text class="svg-label" x="150" y="238">500</text>
+          <text class="svg-label" x="240" y="238">1k</text>
+          <text class="svg-label" x="330" y="238">2k</text>
+          <text class="svg-label" x="395" y="238">5k</text>
+          <!-- area + line: points -->
+          <defs><linearGradient id="areaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(231,199,104,.35)"/><stop offset="100%" stop-color="rgba(231,199,104,0)"/></linearGradient></defs>
+          <path d="M65,212 L155,205 L245,196 L335,178 L400,150 L400,220 L65,220 Z" fill="url(#areaG)" opacity=".9"/>
+          <path id="scaleLine" class="line-path" d="M65,212 L155,205 L245,196 L335,178 L400,150" fill="none" stroke="#e7c768" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <g fill="#f4d77f">
+            <circle cx="65" cy="212" r="4"/><circle cx="155" cy="205" r="4"/><circle cx="245" cy="196" r="4"/><circle cx="335" cy="178" r="4"/><circle cx="400" cy="150" r="4"/>
+          </g>
+          <text class="svg-title" x="50" y="24">Run time (minutes)</text>
+          <text class="svg-label" x="335" y="170" text-anchor="middle">~3 min @ 2,000</text>
+        </svg>
+      </div>
+      <div class="panel reveal d3">
+        <h3>Monthly running cost vs. team size</h3>
+        <div class="cap">Starts at coffee-money for small teams.</div>
+        <svg viewBox="0 0 440 280" role="img" aria-label="Bar chart of running cost by team size">
+          <g stroke="rgba(231,199,104,.12)"><line x1="50" y1="40" x2="420" y2="40"/><line x1="50" y1="100" x2="420" y2="100"/><line x1="50" y1="160" x2="420" y2="160"/><line x1="50" y1="220" x2="420" y2="220"/></g>
+          <line x1="50" y1="220" x2="420" y2="220" stroke="var(--bronze)" stroke-width="1.5"/>
+          <text class="svg-label" x="44" y="224" text-anchor="end">$0</text>
+          <text class="svg-label" x="44" y="164" text-anchor="end">low</text>
+          <text class="svg-label" x="44" y="104" text-anchor="end">mid</text>
+          <text class="svg-label" x="44" y="44"  text-anchor="end">high</text>
+          <g>
+            <rect class="bar-rect" x="90"  y="220" width="46" height="0" data-h="40"  rx="5" fill="url(#barG)"/>
+            <text class="svg-label" x="113" y="238" text-anchor="middle">≤500</text>
+            <rect class="bar-rect" x="190" y="220" width="46" height="0" data-h="96"  rx="5" fill="url(#barG)"/>
+            <text class="svg-label" x="213" y="238" text-anchor="middle">2k</text>
+            <rect class="bar-rect" x="290" y="220" width="46" height="0" data-h="158" rx="5" fill="url(#barG)"/>
+            <text class="svg-label" x="313" y="238" text-anchor="middle">5k+</text>
+          </g>
+          <defs><linearGradient id="barG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f4d77f"/><stop offset="100%" stop-color="#bd9b3e"/></linearGradient></defs>
+          <text class="svg-title" x="50" y="24">Infra cost (relative)</text>
+        </svg>
+      </div>
+    </div>
+    <p class="foot reveal d4" style="margin-top:18px">Graceful degradation: optional services (SMS, push, email, instant payouts) can be switched on after launch with no downtime.</p>
+  </div>
+</section>
+
+<!-- 14. WHY -->
+<section class="slide" id="s14">
+  <span class="section-num">13 — Why This Platform</span>
+  <div class="wrap">
+    <span class="kicker reveal"><span class="dot"></span> The difference</span>
+    <h2 class="reveal d1">Not another attendance app. <span class="grad-text">An operating system for your workforce.</span></h2>
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card reveal d1"><div class="ico">🎯</div><h3>Purpose-built for field security</h3><p>Guards, nurses, housekeeping, supervisors — designed for how field staffing actually works.</p></div>
+      <div class="card reveal d2"><div class="ico">🔁</div><h3>Attendance → payroll, unbroken</h3><p>Most tools stop at clock-in. This one carries a verified hour to a signed payslip and a bank transfer.</p></div>
+      <div class="card reveal d3"><div class="ico">🛡️</div><h3>Compliance is the default</h3><p>Statutory math, data protection and audit trails baked in — not a manual checklist.</p></div>
+      <div class="card reveal d4"><div class="ico">🏢</div><h3>One platform, every client</h3><p>Onboard companies and clients with no new infrastructure — margins improve as you grow.</p></div>
+      <div class="card reveal d5"><div class="ico">💰</div><h3>Stops the leaks</h3><p>No ghost shifts, no payroll errors, no unbillable hours. It pays for itself.</p></div>
+      <div class="card reveal d6"><div class="ico">🚀</div><h3>Ready now</h3><p>A complete, tested, production-ready system — deployable on your own cloud.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 15. CTA -->
+<section class="slide" id="s15">
+  <span class="section-num">14 — Let's Talk</span>
+  <div class="wrap">
+    <div class="cta reveal">
+      <h2>Run your entire workforce<br>from a single screen.</h2>
+      <p>See verified attendance, live field operations and compliant payroll working together — on a live demo with your own sites and shifts.</p>
+      <div class="btn-row">
+        <a class="btn solid" onclick="sendDemo()">Book a live demo →</a>
+        <a class="btn ghost" href="#s1">Replay the deck</a>
+      </div>
+      <p style="margin-top:26px;font-size:.82rem;opacity:.8">Security Management System · Workforce · Attendance · Payroll — unified.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+const prog=document.getElementById('prog');
+function onScroll(){const h=document.documentElement;prog.style.width=((h.scrollTop)/(h.scrollHeight-h.clientHeight)*100)+'%';}
+window.addEventListener('scroll',onScroll);onScroll();
+
+const slides=[...document.querySelectorAll('.slide')];
+const dots=document.getElementById('dots');
+slides.forEach((s,i)=>{const a=document.createElement('a');a.href='#'+s.id;a.title='Slide '+(i+1);dots.appendChild(a);});
+const dotEls=[...dots.children];
+
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.reveal').forEach(r=>r.classList.add('in'));
+      const idx=slides.indexOf(e.target);
+      if(idx>-1){dotEls.forEach(d=>d.classList.remove('active'));dotEls[idx]&&dotEls[idx].classList.add('active');}
+      e.target.querySelectorAll('[data-count]').forEach(runCount);
+      e.target.querySelectorAll('.bar-rect').forEach(animBar);
+      e.target.querySelectorAll('.donut-seg').forEach(animDonut);
+      e.target.querySelectorAll('.line-path').forEach(animLine);
+    }
+  });
+},{threshold:.3});
+slides.forEach(s=>io.observe(s));
+
+function runCount(el){
+  if(el.dataset.done)return;el.dataset.done=1;
+  const target=+el.dataset.count;const dur=1400;const start=performance.now();
+  function tick(now){const p=Math.min((now-start)/dur,1);const eased=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*eased).toLocaleString();if(p<1)requestAnimationFrame(tick);}
+  requestAnimationFrame(tick);
+}
+function animBar(r){
+  if(r.dataset.done)return;r.dataset.done=1;
+  const h=+r.dataset.h;const baseY=+r.getAttribute('y');
+  requestAnimationFrame(()=>{r.setAttribute('height',h);r.setAttribute('y',baseY-h);});
+}
+function animDonut(c){
+  if(c.dataset.done)return;c.dataset.done=1;
+  const C=502.65;const frac=+c.dataset.frac;
+  if(c.dataset.rot){c.setAttribute('transform','rotate('+(+c.dataset.rot-90)+')');}
+  requestAnimationFrame(()=>{setTimeout(()=>{c.style.strokeDashoffset=(C*(1-frac)).toFixed(2);},60);});
+}
+function animLine(p){
+  if(p.dataset.done)return;p.dataset.done=1;
+  const len=p.getTotalLength();p.style.strokeDasharray=len;p.style.strokeDashoffset=len;
+  requestAnimationFrame(()=>{setTimeout(()=>{p.style.strokeDashoffset=0;},80);});
+}
+
+let cur=0;
+function goto(i){cur=Math.max(0,Math.min(slides.length-1,i));slides[cur].scrollIntoView({behavior:'smooth'});}
+window.addEventListener('keydown',(e)=>{
+  if(['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();goto(cur+1);}
+  if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();goto(cur-1);}
+  if(e.key==='Home'){e.preventDefault();goto(0);}if(e.key==='End'){e.preventDefault();goto(slides.length-1);}
+});
+const io2=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)cur=slides.indexOf(e.target);});},{threshold:.6});
+slides.forEach(s=>io2.observe(s));
+function sendDemo(){alert('Add your booking link or contact here.');}
+</script>
+</body>
+</html>
